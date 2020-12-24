@@ -23,8 +23,8 @@ USER_TYPES = (
 
 class User(PermissionsMixin, AbstractBaseUser):
     email = models.EmailField(_("email field"), unique=True)
-    first_name = models.CharField(_('first name'), max_length=50, blank=True)
-    last_name = models.CharField(_('last name'), max_length=50, blank=True)
+    first_name = models.CharField(_('first name'), max_length=50)
+    last_name = models.CharField(_('last name'), max_length=50)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     user_type = models.CharField(_('user type'), max_length=50, choices=USER_TYPES)
     is_active = models.BooleanField(_('active'), default=True)
@@ -35,7 +35,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
         verbose_name = _('user')
