@@ -34,8 +34,11 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 # Application definition
+LOCAL_APPS = [
+    'smis.users',
+]
 
-DJANGO_APPS = [
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +47,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-INSTALLED_APPS = DJANGO_APPS
+INSTALLED_APPS += LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -126,3 +129,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = 'users.User'
