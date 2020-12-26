@@ -1,3 +1,15 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ViewSet
 
-# Create your views here.
+
+class UserView(ViewSet):
+    """
+    A View to handle everything user related.
+
+    Things to consider:
+    1. login.
+    2. registration.
+    3. User listing.
+    4. User deactivation.
+    5. Password change.
+    """
+    pass
