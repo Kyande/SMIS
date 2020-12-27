@@ -1,7 +1,8 @@
-from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import action
+from rest_framework.viewsets import ModelViewSet
 
 
-class UserView(ViewSet):
+class UserView(ModelViewSet):
     """
     A View to handle everything user related.
 
@@ -12,4 +13,10 @@ class UserView(ViewSet):
     4. User deactivation.
     5. Password change.
     """
-    pass
+    @action(methods=['POST'], detail=False)
+    def login(self, request):
+        return
+
+    @action(methods=['POST'], detail=False)
+    def register(self, request):
+        return
