@@ -1,6 +1,9 @@
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
+from .models import User
+from .serializers import UserSerializer
+
 
 class UserView(ModelViewSet):
     """
@@ -13,6 +16,9 @@ class UserView(ModelViewSet):
     4. User deactivation.
     5. Password change.
     """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
     @action(methods=['POST'], detail=False)
     def login(self, request):
         return
