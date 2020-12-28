@@ -30,6 +30,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     is_active = models.BooleanField(_('active'), default=True)
     is_superuser = models.BooleanField(_('superuser'), default=False)
     is_staff= models.BooleanField(_('staff'), default=False)
+    # TODO: validate image mimetype, size and dimension
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
     objects = UserManager()
