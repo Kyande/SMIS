@@ -36,6 +36,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 # Application definition
 LOCAL_APPS = [
     'smis.users',
+    'smis.common',
 ]
 
 INSTALLED_APPS = [
