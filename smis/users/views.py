@@ -2,7 +2,8 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import (
+    UserSerializer, UserLoginSerializer, UserRegistrationSerializer)
 
 
 class UserView(ModelViewSet):
@@ -21,8 +22,20 @@ class UserView(ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def login(self, request):
+        login_serializer = UserLoginSerializer(data=request.data)
+        login_serializer.is_valid(raise_exception=True)
+        # TODO: Login stuff
         return
 
     @action(methods=['POST'], detail=False)
     def register(self, request):
-        return
+        registration_serializer = UserRegistrationSerializer(
+            data=request.data)
+        registration_serializer.is_valid(raise_exception=True)
+        # TODO: Handle exception and return respective HTTP response
+        try:
+            user = User(**registration_serializer.validated_data)
+            user.save()
+            return
+        except Exception as e:
+            return
