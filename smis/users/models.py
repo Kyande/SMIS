@@ -4,6 +4,8 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from smis.common.models import AbstractBase
+
 from .managers import UserManager
 
 SYSTEM_USER = 'SYSTEM_USER'
@@ -21,7 +23,7 @@ USER_TYPES = (
 )
 
 
-class User(PermissionsMixin, AbstractBaseUser):
+class User(PermissionsMixin, AbstractBase, AbstractBaseUser):
     email = models.EmailField(_("email field"), unique=True)
     first_name = models.CharField(_('first name'), max_length=50)
     last_name = models.CharField(_('last name'), max_length=50)
@@ -38,7 +40,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    class Meta:
+    class Meta(AbstractBase.Meta, AbstractBaseUser.Meta):
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
