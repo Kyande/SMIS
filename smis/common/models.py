@@ -48,7 +48,7 @@ class OwnedAbstractBase(AbstractBase):
         except self.__class__.DoesNotExist:
             pass
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.preserve_created_by()
         self.full_clean(exclude=None)
-        super().save()
+        super().save(*args, **kwargs)
