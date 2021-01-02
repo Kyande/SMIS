@@ -19,8 +19,8 @@ class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(
         write_only=True, required=True, allow_null=False)
     password = serializers.CharField(
-        max_length=10, write_only=True, allow_null=False, required=True,
-        trim_whitespace=True)
+        min_length=8, max_length=10, write_only=True, allow_null=False,
+        required=True, trim_whitespace=True)
 
 
 class UserRegistrationSerializer(serializers.Serializer):
@@ -38,8 +38,8 @@ class UserRegistrationSerializer(serializers.Serializer):
         write_only=True, choices=USER_TYPES, required=True,
         allow_null=False)
     password = serializers.CharField(
-        max_length=10, write_only=True, allow_null=False, required=True,
-        trim_whitespace=True)
+        min_length=8, max_length=10, write_only=True, allow_null=False,
+        required=True, trim_whitespace=True)
     repeat_password = serializers.CharField(
         min_length=8, max_length=10, write_only=True, allow_null=False,
         required=True, trim_whitespace=True)
@@ -47,4 +47,5 @@ class UserRegistrationSerializer(serializers.Serializer):
     def validate(self, *args, **kwargs):
         super().validate(*args, **kwargs)
         if self.password != self.repeat_password:
-            raise serializers.ValidationError({"password": "your passwords do not match"})
+            raise serializers.ValidationError(
+                {"password": "your passwords do not match"})
