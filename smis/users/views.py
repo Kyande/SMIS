@@ -17,7 +17,7 @@ from .serializers import (
     UserRegistrationSerializer)
 
 
-class UserView(ModelViewSet):
+class UserViewSet(ModelViewSet):
     """
     User endpoint that handles user related actions
 

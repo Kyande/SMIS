@@ -5,6 +5,6 @@ from . import views
 
 
 router = SimpleRouter()
-router.register(r'users', views.UserView)
+router.register(r'users', views.UserViewSet)
 
 urlpatterns = router.urls
