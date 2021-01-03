@@ -19,14 +19,17 @@ from .serializers import (
 
 class UserView(ModelViewSet):
     """
-    A View to handle everything user related.
+    User endpoint that handles user related actions
 
-    Things to consider:
-    1. login.
-    2. registration.
-    3. User listing.
-    4. User deactivation.
-    5. Password change.
+    User actions supported:
+        1. User listing.
+        2. User Updates.
+        3. User Login.
+        4. User registration.
+        5. User password change.
+        6. User account deactivation.
+        7. User account reactivation.
+        8. User logout.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
