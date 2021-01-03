@@ -43,7 +43,12 @@ class UserView(ModelViewSet):
             return Response(
                 login_resp_serializer.data,
                 status=status.HTTP_200_OK)
-        else:
+
+        if user and user.is_active is False:
+            data = {"error": "This user is currently inactive"}
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+        if not user:
             data = {"error": "User authentication failed"}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
