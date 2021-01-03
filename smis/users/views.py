@@ -66,3 +66,12 @@ class UserView(ModelViewSet):
         except Exception:
             data = {"user": "User registration failed"}
             return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['GET'], detail=False)
+    def logout(self, request):
+        user = request.user
+        # delete user token
+        tokens = Token.objects.filter(user=user)
+        tokens.delete()
+        data = {"user": "User log out successfully"}
+        return Response(data, status=status.HTTP_200_ACCEPTED)
