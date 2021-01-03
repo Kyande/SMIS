@@ -49,10 +49,13 @@ class UserView(ModelViewSet):
         registration_serializer = UserRegistrationSerializer(
             data=request.data)
         registration_serializer.is_valid(raise_exception=True)
-        # TODO: Handle exception and return respective HTTP response
         try:
-            user = User(**registration_serializer.validated_data)
+            validated_data = {**registration_serializer.validated_data}
+            validated_data.pop('repeat_password')
+            user = User(**validated_data)
             user.save()
-            return
-        except Exception as e:
-            return
+            data = {"user": "User registration successful"}
+            return Response(data, status=status.HTTP_201_CREATED)
+        except Exception:
+            data = {"user": "User registration failed"}
+            return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
