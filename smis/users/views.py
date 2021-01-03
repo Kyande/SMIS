@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -26,7 +27,7 @@ class UserView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST'], detail=False, permission_classes=[AllowAny, ])
     def login(self, request):
         login_serializer = UserLoginSerializer(data=request.data)
         login_serializer.is_valid(raise_exception=True)
@@ -46,7 +47,7 @@ class UserView(ModelViewSet):
             data = {"user": "User authentication failed"}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST'], detail=False, permission_classes=[AllowAny, ])
     def register(self, request):
         registration_serializer = UserRegistrationSerializer(
             data=request.data)
