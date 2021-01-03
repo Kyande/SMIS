@@ -51,8 +51,13 @@ class UserView(ModelViewSet):
         registration_serializer.is_valid(raise_exception=True)
         try:
             validated_data = {**registration_serializer.validated_data}
+            # remove repeated password entry
             validated_data.pop('repeat_password')
+            # remove password entry
+            password = validated_data.pop('password')
             user = User(**validated_data)
+            # set user password
+            user.set_password(password)
             user.save()
             data = {"user": "User registration successful"}
             return Response(data, status=status.HTTP_201_CREATED)
