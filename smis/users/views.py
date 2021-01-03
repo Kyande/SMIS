@@ -37,8 +37,10 @@ class UserView(ModelViewSet):
         if user:
             # user authenticated successfully
             Token.objects.get_or_create(user=user)
+            login_resp_serializer = UserLoginResponseSerializer(
+                user, context={'request': request})
             return Response(
-                UserLoginResponseSerializer(user).data,
+                login_resp_serializer.data,
                 status=status.HTTP_200_OK)
         else:
             data = {"user": "User authentication failed"}
