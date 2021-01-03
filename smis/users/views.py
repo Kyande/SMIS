@@ -42,7 +42,7 @@ class UserView(ModelViewSet):
                 status=status.HTTP_200_OK)
         else:
             data = {"user": "User authentication failed"}
-            return Response(data, status=status.HTTP_403_FORBIDDEN)
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=False)
     def register(self, request):
