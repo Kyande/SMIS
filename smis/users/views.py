@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from smis.common.permissions import IsAdminOrSystemUser
 
+from .filters import UserFilter
 from .models import User
 from .serializers import (
     PasswordChangeSerializer, UserDeactivationSerializer,
@@ -33,6 +34,11 @@ class UserViewSet(ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filterset_class = UserFilter
+    ordering = ['-first_name', '-last_name']
+    ordering_fields = [
+        'first_name', 'last_name', 'date_joined', 'last_login', ]
+    # search_fields = ['@first_name', '@last_name']
 
     @action(methods=['POST'], detail=False, permission_classes=[AllowAny, ])
     def login(self, request):
