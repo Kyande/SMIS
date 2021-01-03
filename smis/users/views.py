@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -7,10 +8,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from smis.common.permissions import IsAdminOrSystemUser
+
 from .models import User
 from .serializers import (
-    UserSerializer, UserLoginSerializer,
-    UserLoginResponseSerializer, UserRegistrationSerializer)
+    PasswordChangeSerializer, UserDeactivationSerializer,
+    UserSerializer, UserLoginSerializer, UserLoginResponseSerializer,
+    UserRegistrationSerializer)
 
 
 class UserView(ModelViewSet):
@@ -33,9 +37,9 @@ class UserView(ModelViewSet):
         login_serializer.is_valid(raise_exception=True)
         user = authenticate(
             username=login_serializer.validated_data['email'],
-            password=login_serializer.validated_data['password']
+            password=login_serializer.validated_data['password'],
         )
-        if user and user.is_active:
+        if user:
             # user authenticated successfully
             Token.objects.get_or_create(user=user)
             login_resp_serializer = UserLoginResponseSerializer(
@@ -43,10 +47,6 @@ class UserView(ModelViewSet):
             return Response(
                 login_resp_serializer.data,
                 status=status.HTTP_200_OK)
-
-        if user and user.is_active is False:
-            data = {"error": "This user is currently inactive"}
-            return Response(data, status=status.HTTP_403_FORBIDDEN)
 
         if not user:
             data = {"error": "User authentication failed"}
@@ -81,3 +81,54 @@ class UserView(ModelViewSet):
         tokens.delete()
         data = {"success": "User log out successfully"}
         return Response(data, status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=False)
+    def change_password(self, request):
+        user = request.user
+        password_reset_serializer = PasswordChangeSerializer(data=request.data)
+        password_reset_serializer.is_valid(raise_exception=True)
+        authenticated_user = authenticate(
+            username=user.email,
+            password=password_reset_serializer.validated_data['old_password'],
+        )
+        if authenticated_user and authenticated_user.is_active:
+            user.set_password(
+                password_reset_serializer.validated_data['new_password'])
+            user.save()
+            data = {"success": "Password changed successfully"}
+            return Response(data, status=status.HTTP_202_ACCEPTED)
+
+        if not authenticated_user:
+            data = {"error": "User credentials provided are not correct"}
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+    @action(methods=['POST'], detail=False)
+    def deactivate_account(self, request):
+        user = request.user
+        user_deactivation_serializer = UserDeactivationSerializer(
+            data=request.data)
+        user_deactivation_serializer.is_valid(raise_exception=True)
+        authenticated_user = authenticate(
+            username=user.email,
+            password=user_deactivation_serializer.validated_data['password'],
+        )
+        if authenticated_user and authenticated_user.is_active:
+            user.is_active = False
+            user.save()
+            data = {"success": "User account deactivated successfully"}
+            return Response(data, status=status.HTTP_202_ACCEPTED)
+
+        if not authenticated_user:
+            data = {"error": "User credentials provided are not correct"}
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+    @action(
+        methods=['POST'],
+        detail=True,
+        permission_classes=[IsAdminOrSystemUser, ])
+    def reactivate_account(self, request, pk=None):
+        user = get_object_or_404(User, id=pk)
+        user.is_active = True
+        user.save()
+        data = {"success": "User account reactivated successfully"}
+        return Response(data, status=status.HTTP_202_ACCEPTED)
