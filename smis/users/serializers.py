@@ -43,20 +43,20 @@ class UserRegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField(
         write_only=True, required=True, allow_null=False)
     first_name = serializers.CharField(
-        max_length=50, write_only=True, required=True, allow_null=False,
-        trim_whitespace=True)
+        max_length=50, write_only=True, required=True,
+        allow_null=False, trim_whitespace=True)
     last_name = serializers.CharField(
-        max_length=50, write_only=True, required=True, allow_null=False,
-        trim_whitespace=True)
+        max_length=50, write_only=True, required=True,
+        allow_null=False, trim_whitespace=True)
     user_type = serializers.ChoiceField(
         write_only=True, choices=USER_TYPES, required=True,
         allow_null=False)
     password = serializers.CharField(
-        min_length=8, max_length=10, write_only=True, allow_null=False,
-        required=True, trim_whitespace=True)
+        min_length=8, max_length=10, write_only=True,
+        allow_null=False, required=True, trim_whitespace=True)
     repeat_password = serializers.CharField(
-        min_length=8, max_length=10, write_only=True, allow_null=False,
-        required=True, trim_whitespace=True)
+        min_length=8, max_length=10, write_only=True,
+        allow_null=False, required=True, trim_whitespace=True)
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
