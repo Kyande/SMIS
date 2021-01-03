@@ -28,10 +28,11 @@ class User(PermissionsMixin, AbstractBase, AbstractBaseUser):
     first_name = models.CharField(_('first name'), max_length=50)
     last_name = models.CharField(_('last name'), max_length=50)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    user_type = models.CharField(_('user type'), max_length=50, choices=USER_TYPES)
+    user_type = models.CharField(
+        _('user type'), max_length=50, choices=USER_TYPES)
     is_active = models.BooleanField(_('active'), default=True)
     is_superuser = models.BooleanField(_('superuser'), default=False)
-    is_staff= models.BooleanField(_('staff'), default=False)
+    is_staff = models.BooleanField(_('staff'), default=False)
     # TODO: validate image mimetype, size and dimension
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
