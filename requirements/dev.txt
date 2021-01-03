@@ -1,3 +1,4 @@
 -r base.txt
 
 ipython==7.19.0
+flake8==3.8.4
