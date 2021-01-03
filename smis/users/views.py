@@ -123,7 +123,7 @@ class UserView(ModelViewSet):
             return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     @action(
-        methods=['POST'],
+        methods=['GET'],
         detail=True,
         permission_classes=[IsAdminOrSystemUser, ])
     def reactivate_account(self, request, pk=None):
