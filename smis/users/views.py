@@ -75,4 +75,4 @@ class UserView(ModelViewSet):
         tokens = Token.objects.filter(user=user)
         tokens.delete()
         data = {"success": "User log out successfully"}
-        return Response(data, status=status.HTTP_200_ACCEPTED)
+        return Response(data, status=status.HTTP_200_OK)
