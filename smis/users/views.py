@@ -1,9 +1,15 @@
+from django.contrib.auth import authenticate
+
+from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import User
 from .serializers import (
-    UserSerializer, UserLoginSerializer, UserRegistrationSerializer)
+    UserSerializer, UserLoginSerializer,
+    UserLoginResponseSerializer, UserRegistrationSerializer)
 
 
 class UserView(ModelViewSet):
@@ -24,8 +30,19 @@ class UserView(ModelViewSet):
     def login(self, request):
         login_serializer = UserLoginSerializer(data=request.data)
         login_serializer.is_valid(raise_exception=True)
-        # TODO: Login stuff
-        return
+        user = authenticate(
+            username=login_serializer.validated_data['email'],
+            password=login_serializer.validated_data['password']
+        )
+        if user:
+            # user authenticated successfully
+            Token.objects.get_or_create(user=user)
+            return Response(
+                UserLoginResponseSerializer(user).data,
+                status=status.HTTP_200_OK)
+        else:
+            data = {"user": "User authentication failed"}
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     @action(methods=['POST'], detail=False)
     def register(self, request):
