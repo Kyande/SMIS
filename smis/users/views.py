@@ -44,7 +44,7 @@ class UserView(ModelViewSet):
                 login_resp_serializer.data,
                 status=status.HTTP_200_OK)
         else:
-            data = {"user": "User authentication failed"}
+            data = {"error": "User authentication failed"}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=False, permission_classes=[AllowAny, ])
@@ -62,10 +62,10 @@ class UserView(ModelViewSet):
             # set user password
             user.set_password(password)
             user.save()
-            data = {"user": "User registration successful"}
+            data = {"success": "User registration successful"}
             return Response(data, status=status.HTTP_201_CREATED)
         except Exception:
-            data = {"user": "User registration failed"}
+            data = {"error": "User registration failed"}
             return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(methods=['GET'], detail=False)
@@ -74,5 +74,5 @@ class UserView(ModelViewSet):
         # delete user token
         tokens = Token.objects.filter(user=user)
         tokens.delete()
-        data = {"user": "User log out successfully"}
+        data = {"success": "User log out successfully"}
         return Response(data, status=status.HTTP_200_ACCEPTED)
