@@ -23,6 +23,20 @@ class UserLoginSerializer(serializers.Serializer):
         required=True, trim_whitespace=True)
 
 
+class UserLoginResponseSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(source='auth_token')
+    id = serializers.UUIDField(format='hex_verbose')
+
+    class Meta:
+        model = User
+        fields = [
+            'token', 'id', 'avatar', 'first_name', 'last_name',
+            'email', 'date_joined', 'last_login', 'user_type',
+            'is_active'
+        ]
+        read_only_fields = fields
+
+
 class UserRegistrationSerializer(serializers.Serializer):
     avatar = serializers.ImageField(
         write_only=True, required=False, allow_null=True)
@@ -44,8 +58,9 @@ class UserRegistrationSerializer(serializers.Serializer):
         min_length=8, max_length=10, write_only=True, allow_null=False,
         required=True, trim_whitespace=True)
 
-    def validate(self, *args, **kwargs):
-        super().validate(*args, **kwargs)
-        if self.password != self.repeat_password:
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['password'] != attrs['repeat_password']:
             raise serializers.ValidationError(
                 {"password": "your passwords do not match"})
+        return attrs
