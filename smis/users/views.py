@@ -35,7 +35,7 @@ class UserView(ModelViewSet):
             username=login_serializer.validated_data['email'],
             password=login_serializer.validated_data['password']
         )
-        if user:
+        if user and user.is_active:
             # user authenticated successfully
             Token.objects.get_or_create(user=user)
             login_resp_serializer = UserLoginResponseSerializer(
