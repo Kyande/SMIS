@@ -1,7 +1,5 @@
 import os
 
-import dj_database_url
-
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
@@ -89,12 +87,35 @@ WSGI_APPLICATION = 'smis.config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-db_url = os.getenv('DATABASE_URL')
-if not db_url:
-    raise ImproperlyConfigured('Database URL not set')
-db = dj_database_url.parse(db_url)
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+if not POSTGRES_DB:
+    raise ImproperlyConfigured('Database name not set')
+
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+if not POSTGRES_USER:
+    raise ImproperlyConfigured('Postgresql user not set')
+
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+if not POSTGRES_PASSWORD:
+    raise ImproperlyConfigured('Postgresql user password not set')
+
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+if not POSTGRES_HOST:
+    raise ImproperlyConfigured('Database host not set')
+
+POSTGRES_PORT = os.getenv('POSTGRES_PORT')
+if not POSTGRES_PORT:
+    raise ImproperlyConfigured('Postgresql port not set')
+
 DATABASES = {
-    'default': db
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': int(POSTGRES_PORT),
+    }
 }
 
 
